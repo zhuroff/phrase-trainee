@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { AddSetForm } from './components/AddSetForm';
+import { NavBar } from './components/NavBar';
+import { SetCollection } from './components/SetCollection';
+import { SingleCollection } from './components/SingleCollection';
+import { LangPairsProvider } from './hooks/useLangPairs';
+import { useLayoutSwitcher } from './hooks/useLayoutSwitcher';
+import './style.css';
 
-function App() {
+export const App = () => {
+  const { layoutParams } = useLayoutSwitcher()
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      className="App"
+      style={{
+        padding: '1rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        display: 'grid',
+        gap: '1rem'
+      }}>
+      <LangPairsProvider value={null}>
+        <NavBar />
+        {layoutParams.createSection.isActive &&
+          <AddSetForm />
+        }
+        {layoutParams.collectionSection.isActive &&
+          <SetCollection />
+        }
+        {layoutParams.currentCollection.current &&
+          <SingleCollection />
+        }
+      </LangPairsProvider>
     </div>
   );
 }
-
-export default App;

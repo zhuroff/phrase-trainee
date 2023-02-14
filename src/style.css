@@ -1,0 +1,28 @@
+.p-datatable-tbody>.hidden-a .lang-a,
+.p-datatable-tbody>.hidden-b .lang-b {
+  visibility: hidden;
+}
+
+.p-datatable-tbody .phrase .p-button-icon-only {
+  opacity: 0;
+}
+
+.p-datatable-tbody .phrase .p-inputtext+.p-button-icon-only {
+  opacity: 1;
+}
+
+.p-datatable-tbody .phrase>div:hover .p-button-icon-only {
+  opacity: 1;
+}
+
+.p-datatable-tbody>.learned .phrase {
+  color: var(--green-600);
+}
+
+.p-datatable-tbody>.repeat:not(.learned) .phrase {
+  color: var(--red-500);
+}
+
+.p-dialog .p-inputtextarea {
+  width: 100%;
+}

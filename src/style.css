@@ -1,28 +1,45 @@
-.p-datatable-tbody>.hidden-a .lang-a,
-.p-datatable-tbody>.hidden-b .lang-b {
+.App .p-datatable-tbody>.hidden-a .lang-a,
+.App .p-datatable-tbody>.hidden-b .lang-b {
   visibility: hidden;
 }
 
-.p-datatable-tbody .phrase .p-button-icon-only {
+.App .p-datatable-tbody .phrase .p-button-icon-only {
   opacity: 0;
 }
 
-.p-datatable-tbody .phrase .p-inputtext+.p-button-icon-only {
+.App .p-datatable-tbody .phrase .p-inputtext+.p-button-icon-only {
   opacity: 1;
 }
 
-.p-datatable-tbody .phrase>div:hover .p-button-icon-only {
+.App .p-datatable-tbody .phrase>div:hover .p-button-icon-only {
   opacity: 1;
 }
 
-.p-datatable-tbody>.learned .phrase {
+.App .p-datatable-tbody>.learned .phrase {
   color: var(--green-600);
 }
 
-.p-datatable-tbody>.repeat:not(.learned) .phrase {
+.App .p-datatable-tbody>.repeat:not(.learned) .phrase {
   color: var(--red-500);
 }
 
 .p-dialog .p-inputtextarea {
   width: 100%;
+}
+
+.App .p-datatable-tbody .phrase.lang-a,
+.App .p-datatable-tbody .phrase.lang-b {
+  border-right: 1px solid var(--surface-c);
+}
+
+.App .p-datatable .p-datatable-thead>tr>th:first-child,
+.App .p-datatable .p-datatable-tbody>tr>td:first-child {
+  padding-right: 0
+}
+
+.App .p-inputtextarea,
+.App .p-inputtext,
+.p-dialog,
+.p-button:not(.p-button-rounded) {
+  border-radius: 3px !important;
 }

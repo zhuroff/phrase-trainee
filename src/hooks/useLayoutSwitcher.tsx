@@ -3,15 +3,11 @@ import { createContext, ReactNode, useContext, useState } from 'react'
 const initialState: LayoutSwitcher = {
   createSection: {
     isActive: false,
-    label: 'Добавить'
+    label: 'Add collection'
   },
   collectionSection: {
     isActive: true,
-    label: 'Коллекция'
-  },
-  currentCollection: {
-    current: null,
-    label: 'Сет'
+    label: 'All collections'
   }
 }
 
@@ -20,20 +16,16 @@ export type LayoutSwitcherBoolean = {
   label: string
 }
 
-export type LayoutSwitcherCollection = {
-  current: null | string
-  label: string
-}
-
 export type LayoutSwitcher = {
   createSection: LayoutSwitcherBoolean
   collectionSection: LayoutSwitcherBoolean
-  currentCollection: LayoutSwitcherCollection
 }
 
 interface LayoutSwitcherCtx {
   layoutParams: LayoutSwitcher
   setLayoutParams: (payload: LayoutSwitcher) => void
+  currentCollection: string | null,
+  setCurrentCollection: (payload: string | null) => void
 }
 
 interface LayoutSwitcherProps {
@@ -43,15 +35,23 @@ interface LayoutSwitcherProps {
 
 const LayoutSwitcherContext = createContext<LayoutSwitcherCtx>({
   layoutParams: { ...initialState },
-  setLayoutParams: (payload: LayoutSwitcher) => { }
+  setLayoutParams: (payload: LayoutSwitcher) => { },
+  currentCollection: '',
+  setCurrentCollection: (payload: string | null) => {}
 })
 
 export const useLayoutSwitcher = () => useContext(LayoutSwitcherContext)
 export const LayoutSwitcherProvider = ({ value, children }: LayoutSwitcherProps) => {
   const [layoutParams, setLayoutParams] = useState<LayoutSwitcher>({ ...initialState })
+  const [currentCollection, setCurrentCollection] = useState<string | null>(null)
 
   return (
-    <LayoutSwitcherContext.Provider value={{ layoutParams, setLayoutParams }}>
+    <LayoutSwitcherContext.Provider value={{
+      layoutParams,
+      setLayoutParams,
+      currentCollection,
+      setCurrentCollection
+    }}>
       {children}
     </LayoutSwitcherContext.Provider>
   )

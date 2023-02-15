@@ -1,28 +1,61 @@
-import { useState } from 'react';
-import { LayoutSwitcherBoolean, LayoutSwitcherCollection, useLayoutSwitcher } from '../hooks/useLayoutSwitcher'
+import { useEffect, useState } from 'react';
+import { LayoutSwitcherBoolean, useLayoutSwitcher } from '../hooks/useLayoutSwitcher'
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { useLangPairs } from '../hooks/useLangPairs';
 
 export const NavBar = () => {
   const { layoutParams, setLayoutParams } = useLayoutSwitcher()
-  const [isDialogVisible, setIsDialogVisible] = useState(false)
+  const { langPairs, setLangPair } = useLangPairs()
+  const [dialogConfig, setIsDialogConfig] = useState({ isActive: false, isSave: false })
   const [jsonCollection, setJsonCollection] = useState('')
-  const updateLayoutParams = (key: string, value: LayoutSwitcherBoolean | LayoutSwitcherCollection) => {
+  const updateLayoutParams = (key: string, value: LayoutSwitcherBoolean) => {
     setLayoutParams({
       ...layoutParams,
-      [key]: 'isActive' in value
-        ? { ...value, isActive: !value.isActive }
-        : { ...value, current: null }
+      [key]: { ...value, isActive: !value.isActive }
     })
   }
   const getAndPrintJSON = () => {
     const collection = localStorage.getItem('collection')
     if (collection) {
       setJsonCollection(collection)
-      setIsDialogVisible(true)
+      setIsDialogConfig({
+        isActive: true,
+        isSave: false
+      })
     }
   }
+
+  const insertJSON = () => {
+    setJsonCollection('')
+    setIsDialogConfig({
+      isActive: true,
+      isSave: true
+    })
+  }
+
+  const addDataToCollection = () => {
+    const collection = localStorage.getItem('collection')
+    try {
+      const newCollection = JSON.parse(jsonCollection)
+      const oldCollection = collection ? JSON.parse(collection) : {}
+      const resultCollection = Object.assign(oldCollection, newCollection)
+      setLangPair(resultCollection)
+      setIsDialogConfig({
+        isActive: false,
+        isSave: false
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    if (langPairs) {
+      localStorage.setItem('collection', JSON.stringify(langPairs))
+    }
+  }, [langPairs])
 
   return (
     <>
@@ -33,30 +66,48 @@ export const NavBar = () => {
               <Button
                 label={value.label}
                 onClick={() => updateLayoutParams(key, value)}
-                className={
-                  'isActive' in value
-                    ? value.isActive ? 'p-button-secondary' : 'p-button-success'
-                    : value.current ? 'p-button-secondary' : 'p-button-success'
-                }
+                className={`p-button-sm ${value.isActive ? 'p-button-secondary' : 'p-button-help'}`}
               />
             </li>
           ))}
-          <li>
+          <li style={{ marginBottom: '0.5rem' }}>
             <Button
               label="Get JSON"
               onClick={() => getAndPrintJSON()}
-              className="p-button-secondary"
+              className="p-button-sm p-button-secondary"
+            />
+          </li>
+          <li>
+            <Button
+              label="Add JSON"
+              onClick={() => insertJSON()}
+              className="p-button-sm p-button-secondary"
             />
           </li>
         </ul>
       </nav>
       <Dialog
         header="JSON collection"
-        visible={isDialogVisible}
+        visible={dialogConfig.isActive}
         style={{ width: '50vw' }}
-        onHide={() => setIsDialogVisible(false)}
+        onHide={() => setIsDialogConfig({
+          isActive: false,
+          isSave: false
+        })}
       >
-        <InputTextarea value={jsonCollection} autoResize />
+        <InputTextarea
+          value={jsonCollection}
+          onInput={(e) => dialogConfig.isSave ? setJsonCollection(e.currentTarget.value) : false}
+          autoResize
+        />
+        {dialogConfig.isSave &&
+          <Button
+            label="Save collection"
+            disabled={!jsonCollection?.length}
+            onClick={addDataToCollection}
+            className="p-button-sm p-button-help"
+          />
+        }
       </Dialog>
     </>
   )

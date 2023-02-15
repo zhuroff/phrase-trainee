@@ -27,9 +27,7 @@ export const App = () => {
         {layoutParams.collectionSection.isActive &&
           <SetCollection />
         }
-        {layoutParams.currentCollection.current &&
-          <SingleCollection />
-        }
+        <SingleCollection />
       </LangPairsProvider>
     </div>
   );

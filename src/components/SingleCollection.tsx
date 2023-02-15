@@ -8,25 +8,27 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 
 export const SingleCollection = () => {
-  const { layoutParams } = useLayoutSwitcher()
+  const { currentCollection, setCurrentCollection } = useLayoutSwitcher()
   const { langPairs, setLangPair } = useLangPairs()
   const [editableField, setEditableField] = useState<(Pick<LangPair, 'id'> & { key: keyof LangPair }) | null>(null)
   const [newFieldValue, setNewFieldValue] = useState('')
 
   useEffect(() => {
-    localStorage.setItem('collection', JSON.stringify(langPairs))
+    if (langPairs) {
+      localStorage.setItem('collection', JSON.stringify(langPairs))
+    }
   }, [langPairs])
 
-  if (!langPairs || !layoutParams.currentCollection.current) {
+  if (!langPairs || !currentCollection) {
     return <></>
   }
 
   const showHideWholeColumn = (key: keyof LangPair, value: boolean) => {
-    if (layoutParams.currentCollection.current) {
+    if (currentCollection) {
       setLangPair({
         ...langPairs,
-        [layoutParams.currentCollection.current]:
-          langPairs[layoutParams.currentCollection.current].map((el) => ({
+        [currentCollection]:
+          langPairs[currentCollection].map((el) => ({
             ...el,
             [key]: value
           }))
@@ -35,11 +37,11 @@ export const SingleCollection = () => {
   }
 
   const changeRowProperty = (key: keyof LangPair, value: boolean | string, index: number) => {
-    if (layoutParams.currentCollection.current) {
+    if (currentCollection) {
       setLangPair({
         ...langPairs,
-        [layoutParams.currentCollection.current]:
-          langPairs[layoutParams.currentCollection.current].map((el, i) => (
+        [currentCollection]:
+          langPairs[currentCollection].map((el, i) => (
             index === i
               ? { ...el, [key]: value }
               : el
@@ -50,8 +52,8 @@ export const SingleCollection = () => {
 
   const langColumnHeader = (prop: keyof LangPair) => {
     if (
-      layoutParams.currentCollection.current
-      && langPairs[layoutParams.currentCollection.current].some((el) => !el[prop])
+      currentCollection
+      && langPairs[currentCollection].some((el) => !el[prop])
     ) {
       return (
         <Button
@@ -97,7 +99,7 @@ export const SingleCollection = () => {
     return (
       <Button
         icon={`pi pi-eye${row[prop] ? '-slash' : ''}`}
-        className={`p-button-sm p-button-rounded ${row[prop] ? 'p-button-text p-button-raised' : ''}`}
+        className={`p-button-sm p-button-rounded p-button-help ${row[prop] ? 'p-button-text' : ''}`}
         onClick={() => changeRowProperty(prop, row[prop] ? false : true, rowIndex)}
       />
     )
@@ -108,12 +110,12 @@ export const SingleCollection = () => {
       <div style={{ display: 'flex' }}>
         <Button
           icon="pi pi-check"
-          className={`p-button-sm p-button-rounded ${!row.isLearned ? 'p-button-text p-button-raised' : ''}`}
+          className={`p-button-sm p-button-rounded p-button-help ${!row.isLearned ? 'p-button-text' : ''}`}
           onClick={() => changeRowProperty('isLearned', row.isLearned ? false : true, rowIndex)}
         />
         <Button
           icon="pi pi-replay"
-          className={`p-button-sm p-button-rounded ${!row.toRepeat ? 'p-button-text p-button-raised' : ''}`}
+          className={`p-button-sm p-button-rounded p-button-help ${!row.toRepeat ? 'p-button-text' : ''}`}
           onClick={() => changeRowProperty('toRepeat', row.toRepeat ? false : true, rowIndex)}
         />
       </div>
@@ -155,10 +157,10 @@ export const SingleCollection = () => {
   return (
     <Card>
       <h2 style={{ margin: '0 0 1rem' }}>
-        {layoutParams.currentCollection.current}
+        {currentCollection}
       </h2>
       <DataTable
-        value={langPairs[layoutParams.currentCollection.current]}
+        value={langPairs[currentCollection]}
         responsiveLayout="scroll"
         rowClassName={rowClassName}
       >

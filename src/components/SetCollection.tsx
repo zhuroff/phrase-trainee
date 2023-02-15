@@ -4,7 +4,7 @@ import { useLayoutSwitcher } from '../hooks/useLayoutSwitcher';
 
 export const SetCollection = () => {
   const { langPairs } = useLangPairs()
-  const { layoutParams, setLayoutParams } = useLayoutSwitcher()
+  const { setCurrentCollection } = useLayoutSwitcher()
 
   return (
     <Card>
@@ -16,13 +16,7 @@ export const SetCollection = () => {
               <li
                 key={`${index}_${key}`}
                 style={{ cursor: 'pointer' }}
-                onClick={() => setLayoutParams({
-                  ...layoutParams,
-                  currentCollection: {
-                    ...layoutParams.currentCollection,
-                    current: key
-                  }
-                })}
+                onClick={() => setCurrentCollection(key)}
               >{key}</li>
             ))
           }

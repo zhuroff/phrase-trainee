@@ -7,7 +7,7 @@ const initialState: LayoutSwitcher = {
   },
   collectionSection: {
     isActive: true,
-    label: 'All collections'
+    label: 'Collection list'
   }
 }
 
@@ -37,7 +37,7 @@ const LayoutSwitcherContext = createContext<LayoutSwitcherCtx>({
   layoutParams: { ...initialState },
   setLayoutParams: (payload: LayoutSwitcher) => { },
   currentCollection: '',
-  setCurrentCollection: (payload: string | null) => {}
+  setCurrentCollection: (payload: string | null) => { }
 })
 
 export const useLayoutSwitcher = () => useContext(LayoutSwitcherContext)

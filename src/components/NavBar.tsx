@@ -66,7 +66,7 @@ export const NavBar = () => {
               <Button
                 label={value.label}
                 onClick={() => updateLayoutParams(key, value)}
-                className={`p-button-sm ${value.isActive ? 'p-button-secondary' : 'p-button-help'}`}
+                className={`p-button-sm ${value.isActive ? 'p-button-help' : 'p-button-secondary'}`}
               />
             </li>
           ))}

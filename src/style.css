@@ -1,5 +1,5 @@
-.App .p-datatable-tbody>.hidden-a .lang-a,
-.App .p-datatable-tbody>.hidden-b .lang-b {
+.App .p-datatable-tbody>.hidden-a .lang-a>div,
+.App .p-datatable-tbody>.hidden-b .lang-b>div {
   visibility: hidden;
 }
 
@@ -15,15 +15,20 @@
   opacity: 1;
 }
 
-.App .p-datatable-tbody>.learned .phrase {
-  color: var(--green-600);
+.App .p-datatable-tbody>.learned:not(.repeat) .phrase {
+  color: var(--surface-c);
 }
 
-.App .p-datatable-tbody>.repeat:not(.learned) .phrase {
+.App .p-datatable-tbody>.repeat .phrase {
   color: var(--red-500);
+  font-weight: 600;
 }
 
-.p-dialog .p-inputtextarea {
+.App .p-datatable-tbody>.repeat.learned .phrase {
+  opacity: 0.25;
+}
+
+body .p-dialog .p-inputtextarea {
   width: 100%;
 }
 
@@ -37,9 +42,31 @@
   padding-right: 0
 }
 
+.App .p-datatable .p-datatable-thead>tr>th:last-child .p-column-header-content {
+  justify-content: center;
+}
+
 .App .p-inputtextarea,
 .App .p-inputtext,
-.p-dialog,
-.p-button:not(.p-button-rounded) {
+body .p-dialog,
+body .p-confirm-popup,
+body .p-button:not(.p-button-rounded) {
   border-radius: 3px !important;
+}
+
+body .p-confirm-popup .p-confirm-popup-content {
+  padding: 1rem;
+}
+
+body .p-confirm-popup .p-confirm-popup-footer {
+  padding: 0 1rem 1rem 1rem;
+}
+
+.card-title .p-button-icon-only {
+  opacity: 0;
+}
+
+.card-title .p-inputtext+.p-button-icon-only,
+.card-title:hover .p-button-icon-only {
+  opacity: 1;
 }

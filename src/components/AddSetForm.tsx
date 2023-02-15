@@ -5,12 +5,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { useLangPairs } from '../hooks/useLangPairs';
+import { useLayoutSwitcher } from '../hooks/useLayoutSwitcher';
 
 export const AddSetForm = () => {
   const [pairsTitle, setPairsTitle] = useState('')
   const [langAData, setLangAData] = useState('')
   const [langBData, setLangBData] = useState('')
   const { langPairs, setLangPair } = useLangPairs()
+  const { layoutParams, setLayoutParams, setCurrentCollection } = useLayoutSwitcher()
 
   const submitForm = (e: BaseSyntheticEvent) => {
     e.preventDefault()
@@ -39,9 +41,17 @@ export const AddSetForm = () => {
       }))
     })
 
+    setCurrentCollection(pairsTitle)
     setPairsTitle('')
     setLangAData('')
     setLangBData('')
+    setLayoutParams({
+      ...layoutParams,
+      createSection: {
+        ...layoutParams.createSection,
+        isActive: false
+      }
+    })
   }
 
   useEffect(() => {
@@ -50,11 +60,12 @@ export const AddSetForm = () => {
 
   return (
     <Card>
-      <h2 style={{ margin: '0 0 1rem' }}>New Set</h2>
+      <h2 style={{ margin: '0 0 1rem' }}>New Collection</h2>
       <form onSubmit={submitForm}>
         <InputText
           value={pairsTitle}
-          placeholder="Title"
+          placeholder="Collection title"
+          style={{ width: '100%' }}
           onChange={(e) => setPairsTitle(e.target.value)}
         />
         <div style={{
@@ -64,13 +75,13 @@ export const AddSetForm = () => {
           margin: '1rem 0',
         }}>
           <InputTextarea
-            placeholder="First language"
+            placeholder="Language A"
             value={langAData}
             onChange={(e) => setLangAData(e.target.value)}
             autoResize
           />
           <InputTextarea
-            placeholder="Second language"
+            placeholder="Language B"
             value={langBData}
             onChange={(e) => setLangBData(e.target.value)}
             autoResize
@@ -78,6 +89,7 @@ export const AddSetForm = () => {
         </div>
         <Button
           label="Save"
+          className="p-button-sm p-button-help"
           disabled={!pairsTitle.length || !langAData.length || !langBData.length}
         />
       </form>

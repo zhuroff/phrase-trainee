@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, ReactNode, useEffect, useState } from 'react'
 import { Card } from 'primereact/card'
 import { LangPair, useLangPairs } from '../hooks/useLangPairs'
 import { useLayoutSwitcher } from '../hooks/useLayoutSwitcher'
@@ -152,18 +152,19 @@ export const SingleCollection = () => {
     )
   }
 
-  const langColumnBody = (row: LangPair, rowIndex: number, prop: keyof LangPair) => {
+  const langColumnBody = (row: LangPair, rowIndex: number, prop: keyof LangPair, children?: ReactNode) => {
     return (
       row.id === editableField?.id && prop === editableField.key
         ? <div style={{ display: 'flex', alignItems: 'center' }}>
           <InputText
             value={newFieldValue}
-            style={{ flex: '1 1 0' }}
+            style={{ flex: '1 1 0', marginRight: '0.5rem' }}
             onInput={(e) => setNewFieldValue(e.currentTarget.value)}
           />
           <Button
             icon="pi pi-sync"
             className="p-button-sm p-button-rounded p-button-text"
+            style={{ flex: 'none' }}
             onClick={() => {
               changeRowProperty(prop, newFieldValue, row.id)
               setNewFieldValue('')
@@ -176,11 +177,13 @@ export const SingleCollection = () => {
           <Button
             icon="pi pi-pencil"
             className="p-button-sm p-button-rounded p-button-text"
+            style={{ flex: 'none' }}
             onClick={() => {
               setNewFieldValue(row[prop].toString())
               setEditableField({ id: row.id, key: prop })
             }}
           />
+          {children && children}
         </div>
     )
   }
@@ -207,6 +210,17 @@ export const SingleCollection = () => {
       setCollectionTitle(null)
     }
   }
+
+  const GoogleTranslateButton = ({ phrase }: { phrase: string }) => (
+    <Button
+      icon="pi pi-google"
+      className="p-button-sm p-button-rounded p-button-text"
+      style={{ flex: 'none' }}
+      onClick={() => window.open(`
+        https://translate.google.com/?sl=en&tl=ru&text=${phrase}&op=translate
+      `)}
+    />
+  )
 
   return (
     <Card style={{ position: 'relative' }}>
@@ -267,7 +281,9 @@ export const SingleCollection = () => {
         <Column
           className="phrase lang-b"
           header={langColumnHeader('isLangBVisible')}
-          body={(row, options) => langColumnBody(row, options.rowIndex, 'langB')}
+          body={(row: LangPair, options) => (
+            langColumnBody(row, options.rowIndex, 'langB', <GoogleTranslateButton phrase={row.langB} />)
+          )}
         />
         <Column
           header={filterThead}

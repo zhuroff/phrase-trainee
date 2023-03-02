@@ -4,6 +4,7 @@ export type LangPair = {
   id: string;
   langA: string;
   langB: string;
+  comment: string;
   toRepeat: boolean;
   isLearned: boolean;
   isLangAVisible: boolean;

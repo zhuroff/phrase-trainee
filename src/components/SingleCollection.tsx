@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, ReactNode, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, ReactNode, SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { Card } from 'primereact/card'
 import { LangPair, useLangPairs } from '../hooks/useLangPairs'
 import { useLayoutSwitcher } from '../hooks/useLayoutSwitcher'
@@ -6,7 +6,9 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
+import { OverlayPanel } from 'primereact/overlaypanel';
 
 export const SingleCollection = () => {
   const { currentCollection, setCurrentCollection } = useLayoutSwitcher()
@@ -15,6 +17,8 @@ export const SingleCollection = () => {
   const [collectionTitle, setCollectionTitle] = useState<string | null>(null)
   const [newFieldValue, setNewFieldValue] = useState('')
   const [showOnlyUnlearned, setShowOnlyUnlearned] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<LangPair | null>(null);
+  const commentPanelRef = useRef<OverlayPanel>(null);
 
   useEffect(() => {
     if (langPairs) {
@@ -120,7 +124,7 @@ export const SingleCollection = () => {
     return className
   }
 
-  const actionsColumnBody = (row: LangPair, rowIndex: number, prop: keyof LangPair) => {
+  const actionsColumnBody = (row: LangPair, prop: keyof LangPair) => {
     return (
       <Button
         icon={`pi pi-eye${row[prop] ? '-slash' : ''}`}
@@ -144,6 +148,11 @@ export const SingleCollection = () => {
           onClick={() => changeRowProperty('toRepeat', row.toRepeat ? false : true, row.id)}
         />
         <Button
+          icon="pi pi-info-circle"
+          className={`p-button-sm p-button-rounded p-button-text ${row.comment?.length ? 'p-button-warning' : ''}`}
+          onClick={(e) => openComment(e, row.id)}
+        />
+        <Button
           icon="pi pi-trash"
           className="p-button-sm p-button-rounded p-button-text"
           onClick={(e) => deleteRow(e, row.id)}
@@ -152,7 +161,7 @@ export const SingleCollection = () => {
     )
   }
 
-  const langColumnBody = (row: LangPair, rowIndex: number, prop: keyof LangPair, children?: ReactNode) => {
+  const langColumnBody = (row: LangPair, prop: keyof LangPair, children?: ReactNode) => {
     return (
       row.id === editableField?.id && prop === editableField.key
         ? <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -222,6 +231,11 @@ export const SingleCollection = () => {
     />
   )
 
+  const openComment = (e: SyntheticEvent, rowId: string) => {
+    setSelectedRow(langPairs[currentCollection].find(({ id }) => id === rowId) || null)
+    commentPanelRef.current?.toggle(e)
+  }
+
   return (
     <Card style={{ position: 'relative' }}>
       <h2
@@ -268,21 +282,21 @@ export const SingleCollection = () => {
         rowHover
       >
         <Column
-          body={(row, options) => actionsColumnBody(row, options.rowIndex, 'isLangAVisible')}
+          body={(row, options) => actionsColumnBody(row, 'isLangAVisible')}
         />
         <Column
           className="phrase lang-a"
           header={langColumnHeader('isLangAVisible')}
-          body={(row, options) => langColumnBody(row, options.rowIndex, 'langA')}
+          body={(row, options) => langColumnBody(row, 'langA')}
         />
         <Column
-          body={(row, options) => actionsColumnBody(row, options.rowIndex, 'isLangBVisible')}
+          body={(row, options) => actionsColumnBody(row, 'isLangBVisible')}
         />
         <Column
           className="phrase lang-b"
           header={langColumnHeader('isLangBVisible')}
           body={(row: LangPair, options) => (
-            langColumnBody(row, options.rowIndex, 'langB', <GoogleTranslateButton phrase={row.langB} />)
+            langColumnBody(row, 'langB', <GoogleTranslateButton phrase={row.langB} />)
           )}
         />
         <Column
@@ -291,6 +305,23 @@ export const SingleCollection = () => {
         />
       </DataTable>
       <ConfirmPopup />
+      <OverlayPanel
+        ref={commentPanelRef}
+        showCloseIcon
+        id="overlay_panel"
+      >
+        {selectedRow &&
+          <InputTextarea
+            placeholder="Comment"
+            value={selectedRow.comment}
+            onInput={(e) => {
+              setSelectedRow({ ...selectedRow, comment: e.currentTarget.value })
+              changeRowProperty('comment', e.currentTarget.value, selectedRow.id)
+            }}
+            autoResize
+          />
+        }
+      </OverlayPanel>
     </Card>
   )
 }

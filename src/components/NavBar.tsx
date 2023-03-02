@@ -3,6 +3,7 @@ import { LayoutSwitcherBoolean, useLayoutSwitcher } from '../hooks/useLayoutSwit
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { FileUpload } from 'primereact/fileupload';
 import { useLangPairs } from '../hooks/useLangPairs';
 
 export const NavBar = () => {
@@ -33,6 +34,10 @@ export const NavBar = () => {
       isActive: true,
       isSave: true
     })
+  }
+
+  const customBase64Uploader = (e: any) => {
+    console.log(e)
   }
 
   const addDataToCollection = () => {
@@ -84,6 +89,12 @@ export const NavBar = () => {
               className="p-button-sm p-button-secondary"
             />
           </li>
+          {/* <li>
+            <FileUpload
+              customUpload
+              uploadHandler={customBase64Uploader}
+            />
+          </li> */}
         </ul>
       </nav>
       <Dialog

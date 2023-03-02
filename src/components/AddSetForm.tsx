@@ -34,6 +34,7 @@ export const AddSetForm = () => {
         id: uuid(),
         langA: el,
         langB: langB[index],
+        comment: '',
         toRepeat: false,
         isLearned: false,
         isLangAVisible: true,

@@ -15,13 +15,15 @@ export const SetCollection = () => {
     }
   }
 
+  const collectionsList = () => langPairs && Object.entries(langPairs).sort((a, b) => a < b ? -1 : a > b ? 1 : 0)
+
   return (
     <Card>
       <h2 style={{ margin: '0 0 1rem' }}>Collection List</h2>
       {(langPairs && Object.keys(langPairs).length > 0) &&
         <ul style={{ columnCount: 3 }}>
           {
-            Object.entries(langPairs).map(([key, value], index) => {
+            collectionsList()?.map(([key, value], index) => {
               const computedData = learnedPercent(value)
               return (
                 <li

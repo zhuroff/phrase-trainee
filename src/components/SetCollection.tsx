@@ -9,7 +9,7 @@ export const SetCollection = () => {
   const learnedPercent = (data: LangPair[]) => {
     const learned = data.filter(({ isLearned }) => isLearned).length
     return {
-      percent: `${(100 / (data.length / learned || 1)).toFixed(1)}%`,
+      percent: 100 / (data.length / learned || 1),
       total: data.length,
       learned
     }
@@ -34,13 +34,13 @@ export const SetCollection = () => {
                   <span style={{
                     display: 'flex',
                     alignItems: 'center',
-                    color: computedData.total === computedData.learned ? 'var(--green-500)' : 'var(--text-color)'
+                    color: computedData.total === computedData.learned ? 'var(--green-500)' : computedData.percent > 50 ? 'var(--yellow-500)' : 'var(--text-color)'
                   }}>{key}</span>
                   <i style={{
                     fontSize: '0.875rem',
-                    color: computedData.total === computedData.learned ? 'var(--green-500)' : 'var(--surface-300)'
+                    color: computedData.total === computedData.learned ? 'var(--green-500)' : computedData.percent > 50 ? 'var(--yellow-500)' : 'var(--surface-300)'
                   }}>
-                    Phrases: {value.length}; Learned: {computedData.learned} ({computedData.percent})
+                    Phrases: {value.length}; Learned: {computedData.learned} ({computedData.percent.toFixed(1) + '%'})
                   </i>
                 </li>
               )
